@@ -1,0 +1,27 @@
+name: Actions workflow
+on: 
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  run-github-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List files #This step is to check working directory of your project in the VM i.e ubuntu in our case.
+        run: | 
+          pwd 
+          ls
+      - name: Checkout #The 'ls' cmd did not yeild any files list this is because the repo is not cloned into it. To do so lets checkout the code into the working dir.
+        uses: actions/checkout@v1 #This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+      - name: List files after checkout
+        run: |
+          pwd
+          ls
+      - name: Simple Java Script Action
+        id: greet #assigning an ID to this step
+        uses: actions/hello-world-javascript-action@v1 #This action prints "Hello World" or "Hello" + the name of a person to greet to the log. Refer to https://github.com/actions/hello-world-javascript-action
+        with:
+          who-to-greet: Vishal #Input:Required The name of the person to greet. Default "World".
+      - name: Log greeting time
+        run: echo "${{steps.greet.outputs.time}}" #called the first step using its ID and printing The time we greeted you i.e the time the first step got executed.
